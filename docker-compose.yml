@@ -1,0 +1,60 @@
+services:
+
+  mongo:
+    image: mongo:8
+    container_name: poll-mongo
+
+    restart: always
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: ./server
+
+    container_name: poll-backend
+
+    restart: always
+
+    ports:
+      - "5000:5000"
+
+    depends_on:
+      - mongo
+
+    environment:
+      PORT: 5000
+      JWT_SECRET: supersecret
+      MONGO_URI: mongodb://mongo:27017/poll-platform
+
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./client
+
+    container_name: poll-frontend
+
+    restart: always
+
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      - backend
+
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+volumes:
+  mongo-data:
