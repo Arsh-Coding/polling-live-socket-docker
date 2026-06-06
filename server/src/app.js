@@ -23,10 +23,6 @@ const pollRoutes = require(
   "./routes/poll.routes"
 );
 
-const pollRoutes = require(
-  "./routes/poll.routes.js"
-);
-
 app.use("/api/polls", pollRoutes);
 
 module.exports = app;
